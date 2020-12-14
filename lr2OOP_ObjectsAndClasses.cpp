@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <conio.h>
 #include <Windows.h>
+#include <string>
 using namespace std;
 
 class Point3D {
@@ -14,6 +15,13 @@ class Point3D {
             zcord = 0;
 
             cout << "Point3D::Point3D()\n";
+        }
+        Point3D(int a,int b) {
+            xcord = a;
+            ycord = b;
+            zcord = 0;
+
+            cout << "Point3D::Point3D(int a,int b)\n";
         }
         Point3D(int a,int b,int c) {
             xcord = a;
@@ -82,6 +90,10 @@ class Figure {
         virtual void getInfo() {
             cout << "X: " << x << " Y: " << y << endl;
         }
+        Point3D getCords() {
+            Point3D a(x,y);
+            return a;
+        }
 };
 
 class Figure3D : protected Figure {
@@ -125,6 +137,12 @@ class Figure3D : protected Figure {
 
         ~Figure3D() {
             printf("Figure3D::~Figure3D()\n");
+        }
+
+        public:
+            Point3D getCords() {
+            Point3D a(x,y,z);
+            return a;
         }
 };
 
@@ -173,9 +191,21 @@ class ellipse : public Figure {
             cout << "Площадь: " << S << endl;
         }
 
+        int getOsx() {
+            return osx;
+        }
+        int getOsy() {
+            return osy;
+        }
+
         ~ellipse() {
             cout << "ellipse::~ellipse() \n";
         }
+};
+
+class coloredEllipse : ellipse {
+    public:
+        string color;
 };
 
 class parallelepiped : Figure3D {
@@ -219,11 +249,67 @@ class parallelepiped : Figure3D {
 
 };
 
+ellipse ReflectEllipse(ellipse e){
+    Point3D a(e.getCords());
+    ellipse ell(a,e.getOsx(),e.getOsy());
+    return ell;
+};
+
+
+
+void createEllipseStatic1() {
+    cout << "Создание объекта класса ellipse статически\n";
+    ellipse el1;
+    el1.getInfo();
+    cout << "Изменим координаты с помощью метода класса Figure\n";
+    el1.set(10,10);
+    el1.getInfo();
+
+    cout << "Создание объекта-отражения объекта el1 с помощью функци ReflectEllipse\n";
+    ellipse el2 = ReflectEllipse(el1);
+    el2.getInfo();
+};
+
+void createEllipseStatic2() {
+    cout << "Создание объекта класса ellipse статически c помощью 4-х переменных\n";
+    ellipse el1(1,2,3,4);
+    el1.getInfo();
+};
+
+void createEllipseStatic3() {
+    cout << "Создание объекта класса ellipse статически с помощью точки Point\n";
+    Point3D point(1,2);
+    ellipse el1(point,3,4);
+    el1.getInfo();
+};
+
+void createEllipseStatic4() {
+    cout << "Создание объекта класса ellipse статически с помощью другого объекта ellipse, объявленного динамически, затем удаление\n";
+    ellipse *el = new ellipse;
+    ellipse el1(el);
+    el1.getInfo();
+    delete el;
+};
+
+void createColoredEllipse1() {
+    cout << "Создание объекта класса, у которого нет ни конкструктора, ни деструктора, однако таковые есть у его предков\n";
+    coloredEllipse el1;
+    el1.color = "red";
+    cout << "Присваиваем единсвенному атрибуту color значение " << el1.color << endl;
+};
+
+void createParallelepipedDynamic() {
+    cout << "Создание объекта класса parallelepipedстатически статически\n";
+    parallelepiped *pa1 = new parallelepiped;
+    pa1->getInfo();
+
+    delete pa1;
+}
+
+
 
 
 int main() {
     setlocale(LC_ALL, "rus");
 
-    ellipse fw;
-    //123123123
 }
